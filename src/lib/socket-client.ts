@@ -4,7 +4,7 @@ import { io, Socket } from 'socket.io-client';
 let socket: Socket | null = null;
 
 function getSocketUrl(): string {
-  const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:7575'; // 确认端口是 5000
+  const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:7575';
   if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
     return `http://${baseUrl}`;
   }

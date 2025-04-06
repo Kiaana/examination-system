@@ -15,6 +15,7 @@ interface User {
 // Auth Context 类型定义
 interface AuthContextType {
   user: User | null;
+  error: string | null;
   isLoading: boolean; // 统一的加载状态
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, password: string, role?: string) => Promise<void>;
@@ -84,7 +85,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.user) {
         console.log("AuthProvider: Registration successful, user:", response.user);
         setUser(response.user);
-        router.push('/dashboard'); // 注册成功后直接跳转
+        
+        // 注册成功后，显式执行登录操作确保会话已建立
+        try {
+          await authAPI.login(username, password);
+          // 重新验证身份状态，确保会话已正确设置
+          await checkAuthStatus();
+          router.push('/dashboard'); // 确认已登录后再跳转
+        } catch (loginErr) {
+          console.error("AuthProvider: Auto-login after registration failed:", loginErr);
+          // 注册成功但自动登录失败，引导用户手动登录
+          router.push('/login?registered=true');
+          throw new Error('注册成功，但自动登录失败，请手动登录');
+        }
       } else {
         throw new Error(response.message || '注册响应无效');
       }
@@ -120,6 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     login,
     register,
     logout,
+    error: null
   };
 
   return (
