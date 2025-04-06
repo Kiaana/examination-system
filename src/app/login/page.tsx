@@ -19,8 +19,8 @@ import { Input } from '@/components/ui/input';
 
 // 定义表单验证模式
 const loginSchema = z.object({
-  username: z.string().min(3, {
-    message: '用户名至少需要3个字符',
+  username: z.string().min(2, {
+    message: '用户名至少需要2个字符',
   }),
   password: z.string().min(5, {
     message: '密码至少需要5个字符',
