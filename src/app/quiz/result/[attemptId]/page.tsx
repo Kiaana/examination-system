@@ -109,11 +109,11 @@ export default function QuizResultPage() {
 
       // 修改前端结果页面代码
       let timeTakenSeconds: number | null = null;
-      if (apiResult.duration !== undefined) {
+      if (apiResult.duration != null) {  // 使用 != null 同时检查 undefined 和 null
         // 使用后端返回的实际字段名 - duration
         timeTakenSeconds = apiResult.duration;
       } else if (apiResult.startTime && apiResult.submissionTime) {
-        // 后备方案保持不变
+        // 后备方案现在会在 duration 为 null 时执行
         const start = new Date(apiResult.startTime);
         const end = new Date(apiResult.submissionTime);
         timeTakenSeconds = Math.max(0, Math.round((end.getTime() - start.getTime()) / 1000));
